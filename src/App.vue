@@ -1,4 +1,4 @@
 <template>
-	<h1>Myffin</h1>
+	<h1>test</h1>
 	<router-view/>
 </template>
