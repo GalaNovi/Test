@@ -1,0 +1,47 @@
+.board {
+	display: flex;
+	justify-content: center;
+	padding: 100px;
+
+	&__container {
+		min-width: 700px;
+		min-height: 400px;
+
+		padding: 20px 30px;
+		border-radius: 10px;
+		background-color: rgb(255, 255, 255);
+		box-shadow: 0 15px 25px 0 rgba(0, 0, 150, 0.1);
+	}
+}
+
+.board-currencies-list {
+	display: grid;
+	grid-template-columns: repeat(6, 50px);
+	grid-gap: 1px;
+	padding-left: 0;
+	list-style: none;
+
+	&__item {
+		min-height: 25px;
+	}
+
+	&__button {
+		width: 100%;
+		height: 100%;
+
+		cursor: pointer;
+
+		border: 0;
+		border-radius: 2px;
+		background-color: var(--clr-light);
+		color: var(--clr-dark);
+		box-shadow: none;
+		font-size: 13px;
+		transition: all 0.2s;
+
+		&:hover,
+		&--active {
+			background-color: var(--clr-accent-second);
+		}
+	}
+}

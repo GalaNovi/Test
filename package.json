@@ -9,9 +9,16 @@
   },
   "dependencies": {
     "core-js": "^3.6.5",
+    "cors": "^2.8.5",
+    "express": "^4.17.3",
+    "iconv-lite": "^0.6.3",
+    "node-fetch": "^2.6.7",
+    "nodemon": "^2.0.15",
+    "normalize.css": "^8.0.1",
     "vue": "^3.0.0",
     "vue-router": "^4.0.0-0",
-    "vuex": "^4.0.0-0"
+    "vuex": "^4.0.0-0",
+    "xml2js": "^0.4.23"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.5.0",
@@ -39,5 +46,9 @@
     "> 1%",
     "last 2 versions",
     "not dead"
-  ]
+  ],
+  "description": "## Project setup ``` yarn ```",
+  "main": "server/index.js",
+  "author": "",
+  "license": "ISC"
 }

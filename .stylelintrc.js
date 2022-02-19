@@ -66,7 +66,7 @@ module.exports = {
         'selector-no-qualifying-type': true,
         'selector-no-vendor-prefix': true,
         'selector-pseudo-element-colon-notation': 'double',
-        'string-quotes': 'double',
+        'string-quotes': 'single',
 
         'order/order': [
             [
