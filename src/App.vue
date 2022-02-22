@@ -15,34 +15,26 @@
 	import 'normalize.css';
 	import {
 		defineComponent,
-		// onBeforeMount,
+		onBeforeMount,
 		ref,
-		// unref,
 	} from 'vue';
-	// import adaptCurrencyRates from '@/utils/adaptCurrencyRates';
+	import { useStore } from 'vuex';
 
 	export default defineComponent({
 		name: 'App',
 		setup() {
-			const isLoading = ref(false);
+			const store = useStore();
+			const isLoading = ref(true);
 			const isLoadError = ref(false);
-			// const rates = { def: 'value' };
 
-			// onBeforeMount(async () => {
-			// 	const requestedDate = ref(new Date().toLocaleDateString());
-			// 	await fetch(`http://localhost:3000/getCurrencyRates?date=${unref(requestedDate)}`)
-			// 		.then((res) => res.json())
-			// 		.then((data) => {
-			// 			rates = adaptCurrencyRates(data);
-			// 		})
-			// 		.catch((error) => {
-			// 			isLoadError.value = true;
-			// 			isLoading.value = false;
-			// 			console.error(error);
-			// 		});
-			// 	isLoading.value = false;
-			// 	console.log(rates);
-			// });
+			onBeforeMount(async () => {
+				await store.dispatch('fetchCurrencies')
+					.catch((error) => {
+						isLoadError.value = true;
+						console.error(error);
+					});
+				isLoading.value = false;
+			});
 
 			return {
 				isLoading,

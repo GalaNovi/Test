@@ -8,6 +8,7 @@ module.exports = {
 		parser: 'babel-eslint',
 	},
 	rules: {
+		'max-len': 'off',
 		'import/prefer-default-export': 'off',
 		indent: ['error', 'tab'],
 		'vue/script-indent': ['error', 'tab', {

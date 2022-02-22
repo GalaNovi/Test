@@ -6,12 +6,10 @@ export default (dirtyData) => {
 		Nominal,
 		Value,
 	}) => ({
-		// id: item.$.ID,
-		charCode: [CharCode],
-		name: [Name],
-		// numCode: item.NumCode[0],
-		nominal: [Nominal],
-		value: [Value],
+		charCode: CharCode[0],
+		name: Name[0],
+		nominal: Number(Nominal[0]),
+		value: Number(Value[0].replace(',', '.')),
 	}));
 	return rates;
 };
