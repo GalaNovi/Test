@@ -29,4 +29,10 @@ app.get('/getCurrencyRates', async (req, res) => {
 	res.send(json);
 });
 
-app.listen(PORT, (error) => (error ? console.log(error) : console.log(`Listening on port ${PORT}`)));
+app.listen(PORT, (error) => {
+	if (error) {
+		console.log(error);
+	} else {
+		console.log(`Listening on port ${PORT}`);
+	}
+});

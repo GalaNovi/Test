@@ -17,6 +17,10 @@
 	&__currency {
 		min-width: 250px;
 	}
+
+	&__total {
+		pointer-events: none;
+	}
 }
 
 .board-currency {

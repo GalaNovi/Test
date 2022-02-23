@@ -28,11 +28,12 @@
 			const isLoadError = ref(false);
 
 			onBeforeMount(async () => {
-				await store.dispatch('fetchCurrencies')
-					.catch((error) => {
-						isLoadError.value = true;
-						console.error(error);
-					});
+				try {
+					await store.dispatch('fetchCurrencies');
+				} catch (error) {
+					isLoadError.value = true;
+					console.error(error);
+				}
 				isLoading.value = false;
 			});
 

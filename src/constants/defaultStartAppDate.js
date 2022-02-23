@@ -1,1 +1,3 @@
-export const defaultStartAppDate = new Date(Date.now() + 1000 * 60 * 60 * 24);
+import { DAY_MS } from '@/constants/time';
+
+export const defaultStartAppDate = new Date(Date.now() + DAY_MS);

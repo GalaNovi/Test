@@ -1,7 +1,7 @@
 import { createStore } from 'vuex';
-import adaptCurrencies from '@/utils/adaptCurrencyRates';
 import { defaultStartAppDate } from '@/constants/defaultStartAppDate';
 import { RussianRubleCurrency } from '@/constants/russianRubleCurrency';
+import { adaptCurrencies } from '@/utils/adaptCurrencies';
 
 export default createStore({
 	state: {
@@ -14,11 +14,15 @@ export default createStore({
 	},
 	actions: {
 		async fetchCurrencies(ctx, requestedDate = defaultStartAppDate.toLocaleDateString('en-GB')) {
-			const currencies = await fetch(`http://localhost:3000/getCurrencyRates?date=${requestedDate}`)
-				.then((res) => res.json())
-				.then((data) => adaptCurrencies(data));
-			currencies.push(RussianRubleCurrency);
-			ctx.commit('updateCurrencies', currencies);
+			const response = await fetch(`http://localhost:3000/getCurrencyRates?date=${requestedDate}`);
+			const data = await response.json();
+			if (data.ValCurs.Valute) {
+				const currencies = adaptCurrencies(data);
+				currencies.push(RussianRubleCurrency);
+				ctx.commit('updateCurrencies', currencies);
+				return currencies;
+			}
+			throw new Error('No data for the selected date');
 		},
 	},
 	getters: {

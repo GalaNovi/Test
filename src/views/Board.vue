@@ -35,14 +35,15 @@
 			v-model="result"
 			:mode="secondCurrency && 'currency'"
 			:currency="secondCurrency && secondCurrency.charCode"
-			disabled
+			class="board__total"
 		/>
 		<Calendar
-			v-model="date"
-			:value="date"
+			v-model="currentDate"
 			:inline="true"
+			:maxDate="maxCalendarDate"
 			class="board__calendar"
 		/>
+		<Toast />
 	</div>
 </template>
 
@@ -56,32 +57,66 @@
 	} from 'vue';
 	import { useStore } from 'vuex';
 	import { defaultStartAppDate } from '@/constants/defaultStartAppDate';
+	import { useHelpers } from '@/views/composition/helpers';
+	import { useToast } from 'primevue/usetoast';
+	import Toast from 'primevue/toast';
 
 	export default defineComponent({
 		name: 'Board',
+		components: {
+			Toast,
+		},
 		setup() {
+			const toast = useToast();
 			const store = useStore();
-			const currencies = computed(() => store.getters.sortedCurrencies);
+			const { equalCharCodes } = useHelpers();
+			const maxCalendarDate = defaultStartAppDate;
 			const firstCurrency = ref(undefined);
 			const secondCurrency = ref(undefined);
 			const firstCurrencyAmount = ref(0);
-			const date = ref(defaultStartAppDate);
+			const currentDate = ref(defaultStartAppDate);
 
 			/** Computed */
+			const currencies = computed(() => store.getters.sortedCurrencies);
 			const firstCurrencyRateDenominated = computed(() => (unref(firstCurrency).value / unref(firstCurrency).nominal));
 			const secondCurrencyRateDenominated = computed(() => (unref(secondCurrency).value / unref(secondCurrency).nominal));
-			const result = computed(() => (unref(firstCurrency) && unref(secondCurrency) ? (unref(firstCurrencyRateDenominated) * unref(firstCurrencyAmount)) / unref(secondCurrencyRateDenominated) : undefined));
+			const result = computed(() => (unref(firstCurrency) && unref(secondCurrency) ? (unref(firstCurrencyRateDenominated) * unref(firstCurrencyAmount)) / unref(secondCurrencyRateDenominated) : 0));
 
 			/** Methods */
 			const onFirstCurrencyInput = ({ value }) => {
 				firstCurrencyAmount.value = value;
 			};
+			const updateFirstCurrency = () => {
+				firstCurrency.value = unref(currencies).find((item) => equalCharCodes(item.charCode, unref(firstCurrency).charCode));
+			};
+			const updateSecondCurrency = () => {
+				secondCurrency.value = unref(currencies).find((item) => equalCharCodes(item.charCode, unref(secondCurrency).charCode));
+			};
 
-			watch(date, (newVal, oldVal) => {
+			watch(currentDate, async (newVal, oldVal) => {
 				const newDate = newVal.toLocaleDateString('en-GB');
 				const oldDate = oldVal.toLocaleDateString('en-GB');
 				if (newDate !== oldDate) {
-					store.dispatch('fetchCurrencies', newDate);
+					try {
+						await store.dispatch('fetchCurrencies', newDate);
+						if (unref(firstCurrency)) {
+							updateFirstCurrency();
+						}
+						if (unref(secondCurrency)) {
+							updateSecondCurrency();
+						}
+						// if (!unref(currencies).includes(unref(firstCurrency)) || !unref(currencies).includes(unref(secondCurrency))) {
+						// 	firstCurrency.value = undefined;
+						// 	secondCurrency.value = undefined;
+						// 	toast.add({
+						// 		severity: 'error', summary: 'Error', detail: 'One or both currencies are missing on the selected date', life: 3000,
+						// 	});
+						// }
+					} catch (error) {
+						toast.add({
+							severity: 'error', summary: error.name, detail: error.message, life: 3000,
+						});
+					}
 				}
 			});
 
@@ -91,7 +126,8 @@
 				firstCurrencyAmount,
 				currencies,
 				result,
-				date,
+				currentDate,
+				maxCalendarDate,
 				onFirstCurrencyInput,
 			};
 		},
