@@ -1,7 +1,7 @@
 <template>
 	<div class="board">
 		<div class="board__currency board-currency">
-			<h3 class="board-currency__title">First currency</h3>
+			<h4 class="board-currency__title">First currency</h4>
 			<Dropdown
 				v-model="firstCurrency"
 				:options="currencies"
@@ -13,7 +13,7 @@
 			/>
 		</div>
 		<div class="board__currency board-currency">
-			<h3 class="board-currency__title">Second currency</h3>
+			<h4 class="board-currency__title">Second currency</h4>
 			<Dropdown
 				v-model="secondCurrency"
 				:options="currencies"
@@ -33,6 +33,7 @@
 		/>
 		<InputNumber
 			v-model="result"
+			:disabled="!firstCurrency || !secondCurrency"
 			:mode="secondCurrency && 'currency'"
 			:currency="secondCurrency && secondCurrency.charCode"
 			class="board__total"
@@ -40,7 +41,8 @@
 		<Calendar
 			v-model="currentDate"
 			:inline="true"
-			:maxDate="maxCalendarDate"
+			:minDate="calendarDate.min"
+			:maxDate="calendarDate.max"
 			class="board__calendar"
 		/>
 		<Toast />
@@ -70,11 +72,14 @@
 			const toast = useToast();
 			const store = useStore();
 			const { equalCharCodes } = useHelpers();
-			const maxCalendarDate = defaultStartAppDate;
 			const firstCurrency = ref(undefined);
 			const secondCurrency = ref(undefined);
 			const firstCurrencyAmount = ref(0);
 			const currentDate = ref(defaultStartAppDate);
+			const calendarDate = {
+				min: new Date('January 1, 1993 00:00:00'),
+				max: defaultStartAppDate,
+			};
 
 			/** Computed */
 			const currencies = computed(() => store.getters.sortedCurrencies);
@@ -88,9 +93,19 @@
 			};
 			const updateFirstCurrency = () => {
 				firstCurrency.value = unref(currencies).find((item) => equalCharCodes(item.charCode, unref(firstCurrency).charCode));
+				if (!unref(firstCurrency)) {
+					toast.add({
+						severity: 'error', summary: 'Error', detail: 'No data for the first currency on the selected date', life: 3000,
+					});
+				}
 			};
 			const updateSecondCurrency = () => {
 				secondCurrency.value = unref(currencies).find((item) => equalCharCodes(item.charCode, unref(secondCurrency).charCode));
+				if (!unref(secondCurrency)) {
+					toast.add({
+						severity: 'error', summary: 'Error', detail: 'No data for the second currency on the selected date', life: 3000,
+					});
+				}
 			};
 
 			watch(currentDate, async (newVal, oldVal) => {
@@ -105,13 +120,6 @@
 						if (unref(secondCurrency)) {
 							updateSecondCurrency();
 						}
-						// if (!unref(currencies).includes(unref(firstCurrency)) || !unref(currencies).includes(unref(secondCurrency))) {
-						// 	firstCurrency.value = undefined;
-						// 	secondCurrency.value = undefined;
-						// 	toast.add({
-						// 		severity: 'error', summary: 'Error', detail: 'One or both currencies are missing on the selected date', life: 3000,
-						// 	});
-						// }
 					} catch (error) {
 						toast.add({
 							severity: 'error', summary: error.name, detail: error.message, life: 3000,
@@ -127,7 +135,7 @@
 				currencies,
 				result,
 				currentDate,
-				maxCalendarDate,
+				calendarDate,
 				onFirstCurrencyInput,
 			};
 		},
