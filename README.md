@@ -5,6 +5,11 @@
 yarn
 ```
 
+## Start server
+```
+nodemon server
+```
+
 ### Compiles and hot-reloads for development
 ```
 yarn dev
