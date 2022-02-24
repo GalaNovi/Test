@@ -13,6 +13,10 @@
 
 <script>
 	import 'normalize.css';
+	import 'primevue/resources/themes/saga-purple/theme.css';
+	import 'primevue/resources/primevue.min.css';
+	import 'primeicons/primeicons.css';
+
 	import {
 		defineComponent,
 		onBeforeMount,

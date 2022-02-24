@@ -41,8 +41,8 @@
 		<Calendar
 			v-model="currentDate"
 			:inline="true"
-			:minDate="calendarDate.min"
-			:maxDate="calendarDate.max"
+			:minDate="calendarDates.min"
+			:maxDate="calendarDates.max"
 			class="board__calendar"
 		/>
 		<Toast />
@@ -76,7 +76,7 @@
 			const secondCurrency = ref(undefined);
 			const firstCurrencyAmount = ref(0);
 			const currentDate = ref(defaultStartAppDate);
-			const calendarDate = {
+			const calendarDates = {
 				min: new Date('January 1, 1993 00:00:00'),
 				max: defaultStartAppDate,
 			};
@@ -135,7 +135,7 @@
 				currencies,
 				result,
 				currentDate,
-				calendarDate,
+				calendarDates,
 				onFirstCurrencyInput,
 			};
 		},
